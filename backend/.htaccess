@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteBase /pixels-website/backend/
+
+# تجاهل الملفات والمجلدات الحقيقية
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# توجيه كل الطلبات إلى index.php
+RewriteRule ^(.*)$ index.php [QSA,L]

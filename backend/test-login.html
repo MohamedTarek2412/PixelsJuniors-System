@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Login Debug Test - Pixels Website</h1>
+        
+        <!-- Test 1: Backend Connection -->
+        <div class="test-section">
+            <h3>1️⃣ Test Backend Connection</h3>
+            <button onclick="testBackendConnection()">Test Connection</button>
+            <div id="connection-result"></div>
+        </div>
+
+        <!-- Test 2: Debug Endpoint -->
+        <div class="test-section">
+            <h3>2️⃣ Test Debug Endpoint</h3>
+            <button onclick="testDebugEndpoint()">Test Debug</button>
+            <div id="debug-result"></div>
+        </div>
+
+        <!-- Test 3: Login Endpoint Info -->
+        <div class="test-section">
+            <h3>3️⃣ Test Login Endpoint (GET)</h3>
+            <button onclick="testLoginEndpoint()">Test Login Info</button>
+            <div id="login-info-result"></div>
+        </div>
+
+        <!-- Test 4: Actual Login -->
+        <div class="test-section">
+            <h3>4️⃣ Test Actual Login</h3>
+            <div>
+                <label>Email:</label><br>
+                <input type="email" id="email" value="AhmedKhaledMabrouk@gmail.com" placeholder="Enter email">
+            </div>
+            <div>
+                <label>Password:</label><br>
+                <input type="password" id="password" value="123456" placeholder="Enter password">
+            </div>
+            <button onclick="testActualLogin()">Login Test</button>
+            <div id="login-result"></div>
+        </div>
+
+        <!-- Test 5: Alternative Login -->
+        <div class="test-section">
+            <h3>5️⃣ Alternative Login (john@pixels.com)</h3>
+            <button onclick="testAlternativeLogin()">Test John Login</button>
+            <div id="alt-login-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost/pixels-website/backend';
+
+        function showResult(elementId, type, message, data = null) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `
+                <div class="result ${type}">
+                    <strong>${message}</strong>
+                    ${data ? `<pre>${JSON.stringify(data, null, 2)}</pre>` : ''}
+                </div>
+            `;
+        }
+
+        async function testBackendConnection() {
+            try {
+                showResult('connection-result', 'info', 'Testing connection...');
+                
+                const response = await fetch(`${API_BASE}`, {
+                    method: 'GET',
+                });
+                
+                const result = await response.text();
+                
+                if (response.ok) {
+                    showResult('connection-result', 'success', `Connection successful! Status: ${response.status}`, result);
+                } else {
+                    showResult('connection-result', 'error', `Connection failed! Status: ${response.status}`, result);
+                }
+            } catch (error) {
+                showResult('connection-result', 'error', 'Connection Error!', error.message);
+            }
+        }
+
+        async function testDebugEndpoint() {
+            try {
+                showResult('debug-result', 'info', 'Testing debug endpoint...');
+                
+                const response = await fetch(`${API_BASE}/debug`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('debug-result', 'success', `Debug successful! Status: ${response.status}`, result);
+                } else {
+                    showResult('debug-result', 'error', `Debug failed! Status: ${response.status}`, result);
+                }
+            } catch (error) {
+                showResult('debug-result', 'error', 'Debug Error!', error.message);
+            }
+        }
+
+        async function testLoginEndpoint() {
+            try {
+                showResult('login-info-result', 'info', 'Testing login endpoint info...');
+                
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('login-info-result', 'success', `Login endpoint info! Status: ${response.status}`, result);
+                } else {
+                    showResult('login-info-result', 'error', `Login endpoint failed! Status: ${response.status}`, result);
+                }
+            } catch (error) {
+                showResult('login-info-result', 'error', 'Login Endpoint Error!', error.message);
+            }
+        }
+
+        async function testActualLogin() {
+            try {
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                if (!email || !password) {
+                    showResult('login-result', 'error', 'Please enter both email and password');
+                    return;
+                }
+
+                showResult('login-result', 'info', 'Testing actual login...');
+                
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('login-result', 'success', `Login successful! Status: ${response.status}`, result);
+                } else {
+                    showResult('login-result', 'error', `Login failed! Status: ${response.status}`, result);
+                }
+            } catch (error) {
+                showResult('login-result', 'error', 'Login Error!', error.message);
+            }
+        }
+
+        async function testAlternativeLogin() {
+            try {
+                showResult('alt-login-result', 'info', 'Testing alternative login...');
+                
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: 'john@pixels.com',
+                        password: 'password'
+                    })
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showResult('alt-login-result', 'success', `Alternative login successful! Status: ${response.status}`, result);
+                } else {
+                    showResult('alt-login-result', 'error', `Alternative login failed! Status: ${response.status}`, result);
+                }
+            } catch (error) {
+                showResult('alt-login-result', 'error', 'Alternative Login Error!', error.message);
+            }
+        }
+
+        // Auto-run connection test on page load
+        window.onload = function() {
+            testBackendConnection();
+        };
+    </script>
+</body>
+</html>
